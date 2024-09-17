@@ -31,11 +31,28 @@ export default function App() {
   function handleDeleteMyNotes(e) {
     let filteredNotes = [...myNotesState];
     filteredNotes = filteredNotes.filter(
-      (item, index) => item.id != e.target.value,
+      (item) => item.id !== parseInt(e.target.value),
     );
 
     setMyNotes(filteredNotes);
-    console.log(filteredNotes);
+    // console.log(filteredNotes);
+  }
+
+  function handleArchiveMyNote(e) {
+    let archivedNotes = [...myNotesState];
+    archivedNotes = archivedNotes.filter(
+      (item) => item.id === parseInt(e.target.value),
+    );
+    archivedNotes[0].archived = true;
+
+    let newNotes = [...myNotesState];
+    newNotes = newNotes.filter((item) => item.id !== parseInt(e.target.value));
+
+    newNotes.push(archivedNotes[0]);
+
+    setMyNotes(newNotes);
+
+    // console.log(newNotes);
   }
 
   useEffect(() => {
@@ -45,7 +62,7 @@ export default function App() {
   // console.log(titleState);
   // console.log(bodyState);
   // console.log(archivedState);
-  console.log([...myNotesState]);
+  // console.log([...myNotesState]);
 
   return (
     <>
@@ -94,39 +111,55 @@ export default function App() {
               <h1 style={{ color: "red" }}>No Notes....</h1>
             ) : (
               myNotesState.map((item, i) => {
-                return (
-                  <div key={i} className={styles2.contentContainer}>
-                    <h1>{item.title}</h1>
-                    <div>
+                if (item.archived === false) {
+                  return (
+                    <div key={i} className={styles2.contentContainer}>
+                      <h1>{item.title}</h1>
                       <div>
-                        <p>{item.body}</p>
-                      </div>
-                      <div className={styles2.buttonGroup}>
-                        <button value={item.id} onClick={handleDeleteMyNotes}>
-                          Delete Note
-                        </button>
-                        <button>Archive Note</button>
+                        <div>
+                          <p>{item.body}</p>
+                        </div>
+                        <div className={styles2.buttonGroup}>
+                          <button value={item.id} onClick={handleDeleteMyNotes}>
+                            Delete Note
+                          </button>
+                          <button value={item.id} onClick={handleArchiveMyNote}>
+                            Archive Note
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                );
+                  );
+                }
               })
             )}
           </div>
           <h1>Archived Notes</h1>
           <div className={styles2.childContainer}>
-            <div>
-              <h1>Test 1</h1>
-            </div>
-            <div>
-              <h1>Test 2</h1>
-            </div>
-            <div>
-              <h1>Test 2</h1>
-            </div>
-            <div>
-              <h1>Test 2</h1>
-            </div>
+            {myNotesState.length === 0 ? (
+              <h1 style={{ color: "red" }}>No Archived Notes yet</h1>
+            ) : (
+              myNotesState.map((item, i) => {
+                if (item.archived === true) {
+                  return (
+                    <div key={i} className={styles2.contentContainer}>
+                      <h1>{item.title}</h1>
+                      <div>
+                        <div>
+                          <p>{item.body}</p>
+                        </div>
+                        <div className={styles2.buttonGroup}>
+                          <button value={item.id} onClick={handleDeleteMyNotes}>
+                            Delete Note
+                          </button>
+                          <button value={item.id}>Archive Note</button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
+              })
+            )}
           </div>
         </div>
       </div>
