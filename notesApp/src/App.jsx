@@ -17,6 +17,11 @@ export default function App() {
   function handleMyNotes(e) {
     e.preventDefault();
 
+    if (titleState === "") {
+      alert("Please include title on your Note !");
+      return;
+    }
+
     const newNote = {
       id: +new Date(),
       title: titleState,
@@ -72,13 +77,29 @@ export default function App() {
             <h1>Notes Input</h1>
             <form className={styles.formGroup}>
               <div>
+                <p
+                  style={{
+                    position: "absolute",
+                    top: "-3px",
+                    left: "100px",
+                    fontSize: "13px",
+                  }}
+                >
+                  {50 - titleState.length} Karakter tersedia
+                </p>
                 <label htmlFor="titleInput">Title :</label>
                 <input
                   type="text"
                   name="titleInput"
                   id="titleInput"
                   value={titleState}
-                  onChange={(e) => setTitleState(e.target.value)}
+                  onChange={(e) => {
+                    if (titleState.length >= 50) {
+                      alert("You can't input more that 50 Character");
+                      e.target.value = "";
+                    }
+                    setTitleState(e.target.value);
+                  }}
                 />
               </div>
               <div>
