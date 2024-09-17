@@ -5,9 +5,7 @@ import AppRouter from "./AppRouter.jsx";
 import "./Styles/main.css";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <BrowserRouter>
-      <AppRouter />
-    </BrowserRouter>
-  </StrictMode>
+  <BrowserRouter>
+    <AppRouter />
+  </BrowserRouter>,
 );
