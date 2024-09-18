@@ -28,7 +28,7 @@ export default function App() {
       id: +new Date(),
       title: titleState,
       body: bodyState,
-      createdAt: new Date().toLocaleDateString("id-ID"),
+      createdAt: new Date().toISOString(),
       archived: archivedState,
     };
 
@@ -181,7 +181,8 @@ export default function App() {
         <div className={styles2.parentContainer}>
           <h1>Active Notes</h1>
           <div className={styles2.childContainer}>
-            {myNotesState.length === 0 ? (
+            {myNotesState.length >= 0 &&
+            !myNotesState.some((item) => !item.archived) ? (
               <h1 style={{ color: "red" }}>No Notes....</h1>
             ) : (
               myNotesState.map((item, i) => {
@@ -189,6 +190,7 @@ export default function App() {
                   return (
                     <div key={i} className={styles2.contentContainer}>
                       <h1>{item.title}</h1>
+                      <h5>{item.createdAt}</h5>
                       <div>
                         <div>
                           <p>{item.body}</p>
@@ -210,7 +212,8 @@ export default function App() {
           </div>
           <h1>Archived Notes</h1>
           <div className={styles2.childContainer}>
-            {myNotesState.length === 0 ? (
+            {myNotesState.length >= 0 &&
+            !myNotesState.some((item) => item.archived) ? (
               <h1 style={{ color: "red" }}>No Archived Notes yet</h1>
             ) : (
               myNotesState.map((item, i) => {
@@ -218,6 +221,7 @@ export default function App() {
                   return (
                     <div key={i} className={styles2.contentContainer}>
                       <h1>{item.title}</h1>
+                      <h5>{item.createdAt}</h5>
                       <div>
                         <div>
                           <p>{item.body}</p>
