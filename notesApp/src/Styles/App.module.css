@@ -86,3 +86,18 @@
     background-color: black;
   }
 }
+
+.searchForm {
+
+  padding: 1rem;
+
+  label {
+    display: flex;
+    gap: 0.5rem;
+
+    input {
+      padding: 0.1rem;
+      border-radius: 5px;
+    }
+  }
+}

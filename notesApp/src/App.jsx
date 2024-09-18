@@ -1,18 +1,20 @@
-import { useState, useEffect } from "react";
-import { getInitialData } from "../index.js";
+import { useState, useEffect, useRef } from "react";
+import { getInitialData } from "./index.js";
+
+import Footer from "./Components/Footer/Footer.jsx";
 
 import "./Styles/App.module.css";
 import styles from "./Styles/App.module.css";
 import styles2 from "./Styles/App2.module.css";
 
 export default function App() {
-  const [myNotesState, setMyNotes] = useState([]);
+  const [myNotesState, setMyNotesState] = useState(getInitialData());
+  const [originalNotes, setOriginalNotes] = useState(getInitialData());
+  const [searchState, setSearchState] = useState("");
 
   const [titleState, setTitleState] = useState("");
   const [bodyState, setBodyState] = useState("");
   const [archivedState, setArchivedState] = useState(false);
-
-  // console.log(getInitialData());
 
   function handleMyNotes(e) {
     e.preventDefault();
@@ -30,7 +32,8 @@ export default function App() {
       archived: archivedState,
     };
 
-    setMyNotes((prevState) => [...prevState, newNote]);
+    setMyNotesState((prevState) => [...prevState, newNote]);
+    setOriginalNotes((prevState) => [...prevState, newNote]);
   }
 
   function handleDeleteMyNotes(e) {
@@ -39,7 +42,15 @@ export default function App() {
       (item) => item.id !== parseInt(e.target.value),
     );
 
-    setMyNotes(filteredNotes);
+    setMyNotesState(filteredNotes);
+
+    let filteredOrginalNotes = [...originalNotes];
+    filteredOrginalNotes = filteredOrginalNotes.filter(
+      (item) => item.id !== parseInt(e.target.value),
+    );
+    setOriginalNotes(filteredOrginalNotes);
+
+    // console.log("Delete");
     // console.log(filteredNotes);
   }
 
@@ -55,14 +66,44 @@ export default function App() {
 
     newNotes.push(archivedNotes[0]);
 
-    setMyNotes(newNotes);
+    setMyNotesState(newNotes);
 
     // console.log(newNotes);
   }
 
+  function handleUnarchiveMyNote(e) {
+    let archivedNotes = [...myNotesState];
+    archivedNotes = archivedNotes.filter(
+      (item) => item.id === parseInt(e.target.value),
+    );
+    archivedNotes[0].archived = false;
+
+    let newNotes = [...myNotesState];
+    newNotes = newNotes.filter((item) => item.id !== parseInt(e.target.value));
+
+    newNotes.push(archivedNotes[0]);
+
+    setMyNotesState(newNotes);
+  }
+
   useEffect(() => {
-    setMyNotes(getInitialData());
-  }, []);
+    let filteredNotes = [...myNotesState];
+
+    filteredNotes = filteredNotes.filter((item) =>
+      item.title.toLowerCase().includes(searchState.toLowerCase()),
+    );
+
+    if (searchState.trim() !== "") {
+      setMyNotesState(filteredNotes);
+    } else if (searchState.trim() === "") {
+      setMyNotesState(originalNotes);
+    }
+
+    // console.log("Original");
+    // console.log(originalNotes);
+    // console.log("Filtered");
+    // console.log(filteredNotes);
+  }, [searchState]);
 
   // console.log(titleState);
   // console.log(bodyState);
@@ -125,6 +166,18 @@ export default function App() {
             </form>
           </div>
         </div>
+        <div className={styles.searchForm}>
+          <label htmlFor="searchNotes">
+            Search Notes:
+            <input
+              type="text"
+              name="searchNotes"
+              id="searchNotes"
+              value={searchState}
+              onChange={(e) => setSearchState(e.target.value)}
+            />
+          </label>
+        </div>
         <div className={styles2.parentContainer}>
           <h1>Active Notes</h1>
           <div className={styles2.childContainer}>
@@ -173,7 +226,12 @@ export default function App() {
                           <button value={item.id} onClick={handleDeleteMyNotes}>
                             Delete Note
                           </button>
-                          <button value={item.id}>Archive Note</button>
+                          <button
+                            value={item.id}
+                            onClick={handleUnarchiveMyNote}
+                          >
+                            {item.archived ? "Unarchive Note" : "Archive Note"}
+                          </button>
                         </div>
                       </div>
                     </div>
@@ -184,6 +242,7 @@ export default function App() {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
