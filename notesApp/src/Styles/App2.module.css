@@ -3,7 +3,6 @@
 
     > h1 {
         text-decoration: underline;
-
     }
 }
 
@@ -14,7 +13,6 @@
     margin-top: 1rem;
     padding: 1rem;
     gap: 1rem;
-
 
     .contentContainer {
         display: flex;
@@ -62,5 +60,25 @@
             color: white;
         }
     }
+}
 
+@media (max-width: 768px) {
+    .childContainer {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .contentContainer {
+        padding: 0.5rem;
+        min-height: 20rem;
+    }
+
+    .buttonGroup {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+    }
+
+    .buttonGroup button {
+        padding: 0.5rem;
+    }
 }
